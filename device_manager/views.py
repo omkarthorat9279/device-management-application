@@ -35,8 +35,9 @@ class DeviceDeleteView(DeleteView):
 def ping_device(request, pk):
     device = get_object_or_404(Device, pk=pk)
     try:
-        result = subprocess.run(['ping', '-c', '4', '-t', '5', device.ip_address], 
-                              capture_output=True, text=True, timeout=10)
+        # Adjust the ping command for Windows
+        result = subprocess.run(['ping', '-n', '4', device.ip_address],  # Use '-n' for Windows
+                                capture_output=True, text=True, timeout=10)
         device.ping_output = result.stdout
         device.ping_status = result.returncode == 0
         device.save()
